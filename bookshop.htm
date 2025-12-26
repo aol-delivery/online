@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- Favicon -->
+<link rel="icon" type="image/png" href="images/images (2).jpeg" />
+  
+<title>Bookshop | AOL Logistics</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+<!-- Header -->
+<header class="bg-[#003366] text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <h1 class="text-xl font-bold">AOL Bookshop</h1>
+    <nav class="hidden md:flex space-x-6 mr-4">
+      <a href="home.html" class="hover:text-yellow-400">Home</a>
+      <a href="#books" class="hover:text-yellow-400">Books</a>
+      <a href="#contact" class="hover:text-yellow-400">Contact</a>
+    </nav>
+    <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-[#00264d] p-4 space-y-4 text-white">
+    <a href="home.html" class="block hover:text-yellow-400">Home</a>
+    <a href="#books" class="block hover:text-yellow-400">Books</a>
+    <a href="#contact" class="block hover:text-yellow-400">Contact</a>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="text-center py-20 bg-cover bg-center text-white" style="background-image:url('https://images.unsplash.com/photo-1512820790803-83ca734da794');">
+  <div class="bg-[#00000099] py-20 px-6">
+    <h2 class="text-4xl font-extrabold mb-4">Welcome to Our Bookshop</h2>
+    <p class="text-lg max-w-2xl mx-auto">Buy educational, motivational and logistics related books with affordable prices.</p>
+  </div>
+</section>
+
+<!-- Books Section -->
+<section id="books" class="py-16 max-w-7xl mx-auto px-6">
+  <h3 class="text-3xl font-bold text-center mb-10 text-[#003366]">Available Books</h3>
+  <div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" data-aos="fade-up"></div>
+  <div class="text-center mt-10">
+    <button id="loadBtn" onclick="loadMore()" class="px-6 py-3 bg-black text-white hover:bg-yellow-400 hover:text-black transition rounded-full">
+      Load More Books
+    </button>
+  </div>
+</section>
+
+
+<!-- Additional Sections -->
+<section class="py-16 bg-gray-50">
+ <div class="container mx-auto px-6 text-center">
+  <h2 class="text-3xl font-bold mb-4">Featured Collections</h2>
+  <p class="text-gray-600 max-w-2xl mx-auto mb-10">Explore bestselling books from various genres carefully selected for knowledge, inspiration and growth.</p>
+  <div class="grid md:grid-cols-3 gap-6">
+   <div class="bg-white shadow-lg rounded-lg p-6">
+    <h3 class="font-semibold text-xl mb-2">Academic & Research</h3>
+    <p class="text-gray-600 text-sm mb-4">Medical, Nursing, Engineering, Science publications.</p>
+    <a class="text-black font-medium hover:text-yellow-400" href="#">View Collection →</a>
+   </div>
+   <div class="bg-white shadow-lg rounded-lg p-6">
+    <h3 class="font-semibold text-xl mb-2">Business & Self-Development</h3>
+    <p class="text-gray-600 text-sm mb-4">Become financially smarter and build a growth mindset.</p>
+    <a class="text-black font-medium hover:text-yellow-400" href="#">View Collection →</a>
+   </div>
+   <div class="bg-white shadow-lg rounded-lg p-6">
+    <h3 class="font-semibold text-xl mb-2">Novels & Literature</h3>
+    <p class="text-gray-600 text-sm mb-4">Fictional stories, thrillers, romance and classics.</p>
+    <a class="text-black font-medium hover:text-yellow-400" href="#">View Collection →</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+<script>
+  document.getElementById('menuBtn').onclick = ()=>{
+    document.getElementById('mobileMenu').classList.toggle('hidden');
+  }
+
+  const books = [
+    { title: "Understanding Logistics", price: 12.99, img:"https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=500&q=80" },
+    { title: "Business Growth Mindset", price: 15.99, img:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&q=80" },
+    { title: "Nursing Made Easy", price: 18.49, img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80" },
+    { title: "Global Trade & Policies", price: 14.25, img:"https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=500&q=80" },
+    { title: "Advanced Medical Terminology", price: 21.85, img:"https://images.unsplash.com/photo-1553729784-e91953dec042?w=500&q=80" },
+    { title: "Pharmacology Quick Guide", price: 17.10, img:"https://images.unsplash.com/photo-1554774853-b414d2a2b3a9?w=500&q=80" },
+    { title: "Modern Nursing Ethics", price: 19.75, img:"https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&q=80" },
+    { title: "Fundamentals of Anatomy", price: 23.50, img:"https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500&q=80" },
+
+      // AUTO LOAD MORE (20+ BOOKS)
+  { title:"Health Assessment Handbook", price: 20.00, img:"https://images.unsplash.com/photo-1457694587812-e8bf29a43845?w=500&q=80"},
+  { title:"First Aid Essentials", price: 11.50, img:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500&q=80"},
+  { title:"Psychology for Nurses",price:16.40, img:"https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80"},
+  { title:"Maternal & Child Care",price:22.30, img:"https://images.unsplash.com/photo-1463320726281-696a485928c7?w=500&q=80"},
+  { title:"Clinical Procedures Manual",price:27.10, img:"https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&q=80"},
+  { title:"Surgical Nursing Guide",price:19.90, img:"https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=500&q=80"},
+  { title:"Emergency Nursing Care",price:24.70, img:"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80"},
+  { title:"Microbiology Simplified",price:15.60, img:"https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=500&q=80"},
+  { title:"Nutrition & Dietetics",price:18.30, img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&q=80"},
+  { title:"Epidemiology Essentials",price:20.55, img:"https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80"},
+  { title:"Community Health Nursing",price:21.99, img:"https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&q=80"},
+  { title:"Medical‒Surgical Handbook",price:25.20, img:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&q=80"},
+  { title:"Entrepreneurship for Nurses",price:17.80, img:"https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500&q=80"},
+  { title:"Critical Care Nursing",price: 26.40, img:"https://images.unsplash.com/photo-1457694587812-e8bf29a43845?w=500&q=80"},
+  { title:"Research Methods in Nursing",price: 24.99, img:"https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&q=80"},
+  { title:"Human Physiology Deep Dive",price: 28.60, img:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500&q=80"},
+  { title:"Advanced Cardiology Notes",price: 31.20, img:"https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80"},
+  { title:"Medical Lab Techniques",price: 22.10, img:"https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&q=80"},
+  { title:"Professional Communication",price: 14.99, img:"https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=500&q=80"},
+  { title:"Advanced Pathology",price: 29.50, img:"https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&q=80"}
+  ];
+
+  let visibleBooks = 8;
+
+  function loadBooks() {
+    const grid = document.getElementById('bookGrid');
+    grid.innerHTML = '';
+    books.slice(0, visibleBooks).forEach(book => {
+      grid.innerHTML += `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:scale-105 duration-300">
+          <img src="${book.img}" class="w-full h-60 object-cover" />
+          <div class="p-4">
+            <h3 class="font-semibold text-lg">${book.title}</h3>
+            <p class="font-bold mt-2 text-yellow-600">$${book.price}</p>
+            <a href="payment.html?title=${encodeURIComponent(book.title)}&price=${book.price}" class="block mt-3 bg-[#003366] text-white text-center py-2 rounded hover:bg-yellow-500 transition">Buy Now</a>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  loadBooks();
+
+  function loadMore(){
+    visibleBooks += 8;
+    if(visibleBooks >= books.length){
+      visibleBooks = books.length;
+      document.getElementById("loadBtn").style.display="none";
+    }
+    loadBooks();
+  }
+</script>
+
+
+<section class="py-20 bg-black text-white text-center">
+  <h2 class="text-4xl font-bold mb-4">Get access to premium books</h2>
+  <p class="max-w-xl mx-auto mb-6 text-gray-300">
+    Stay ahead with new releases and exclusive offers delivered directly to your inbox.
+  </p>
+
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-3 px-4">
+    <input 
+      type="email" 
+      placeholder="Enter your email..." 
+      class="px-4 py-3 rounded w-full sm:w-72 text-black"
+    />
+    <button class="px-6 py-3 bg-yellow-500 text-black font-semibold rounded w-full sm:w-auto">
+      Subscribe
+    </button>
+  </div>
+</section>
+
+
+<!-- Footer -->
+<footer id="contact" class="bg-[#003366] text-white py-10 text-center">
+  <h4 class="text-xl font-bold mb-3">Contact Us</h4>
+  <p>Email: support@aollogistics.com | Phone: +1 213 800 4349</p>
+  <p class="mt-4 text-sm">© 2025 AOL Logistics. All Rights Reserved.</p>
+</footer>
+
+
+</body>
+</html>
