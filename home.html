@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AOL 물류 - 화물을 이동하고 대륙을 연결합니다</title>
+
+   <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/images (2).jpeg" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G5C2122TVD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G5C2122TVD');
+</script>
+
+
+<!-- Supabase & EmailJS SDKs -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* HERO SLIDER - fade transition */
+    .hero-slider {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+      display: block;
+    }
+
+    /* overlay to improve text contrast */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35));
+      pointer-events: none;
+    }
+
+    /* Small adjustments for hero text on small screens */
+    @media (max-width: 640px) {
+      .hero-title { font-size: 1.8rem; }
+      .hero-btn { padding-left: 1rem; padding-right: 1rem; }
+    }
+
+    /* Dark background for the page */
+    body {
+      background-color: #1a202c; /* Dark background */
+      color: #e2e8f0; /* Light text color */
+    }
+
+    /* Adjustments for mobile navbar items */
+    .mobile-link {
+      padding: 10px; /* Adjusted padding for mobile links */
+      font-size: 1rem; /* Adjusted font size */
+    }
+
+    /* Change text color to skyblue */
+    .text-skyblue {
+      color: #87CEEB; /* Skyblue color */
+    }
+
+    .bg-skyblue {
+      background-color: #87CEEB; /* Skyblue background */
+    }
+
+    /* Adjust the size and display of images in testimonials */
+.testimonial-img {
+  width: 100%; /* Full width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the area without distorting */
+}
+
+/* Ensure the mobile navbar items are responsive */
+.mobile-link {
+  padding: 10px 15px; /* Adjust padding */
+  font-size: 1rem; /* Adjust font size */
+  width: 100%; /* Full width for each link */
+  text-align: left; /* Align text to the left */
+}
+
+#mobileMenu {
+  width: 100%; /* Set the mobile menu to match the page width */
+}
+
+/* Adjust the navbar background and shadow */
+header {
+  background-color: #2d3748; /* Darker background for the navbar */
+}
+
+/* Adjust the button styles for mobile */
+button {
+  min-width: 80px; /* Ensure buttons have a minimum width */
+}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+<header class="bg-gray-800 shadow-md fixed top-0 left-0 w-full z-50">
+  <div class="container mx-auto flex items-center justify-between px-6 py-2">
+    <a href="home.html" class="flex items-center space-x-2">
+      <img src="images/images (2).jpeg" alt="Logo" class="h-12 w-12 object-cover rounded-full hidden sm:block">
+        <div class="flex flex-col leading-tight">
+           <h1 class="text-lg md:text-xl font-bold text-sky-700 italic" data-key="brand">
+            AOL LOGISTICS
+           </h1>
+           <p class="text-xs italic text-gray-300 -mt-1 tracking-tight hidden sm:block">
+           delivery service at its finest
+        </p>
+  </div>
+    </a>
+    
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex space-x-6">
+        <a href="about.html" class="hover:text-skyblue" data-key="nav_about">회사 소개</a>
+        <a href="#services" class="hover:text-skyblue" data-key="nav_services">서비스</a>
+        <a href="tracking.html" class="hover:text-skyblue" data-key="nav_track">배송 추적</a>
+        <a href="form.html" class="hover:text-skyblue" data-key="nav_create">배송 생성</a>
+        <a href="bookshop.html" class="hover:text-skyblue" data-key="nav_news">서점</a>
+        <a href="#contact" class="hover:text-skyblue" data-key="nav_contact">연락처</a>
+        <a href="admin/login.html" class="hover:text-skyblue" data-key="nav_login">로그인</a>
+      </nav>
+
+      <div class="flex items-center">
+        <button id="langToggle" class="ml-4 bg-skyblue text-white px-4 py-2 rounded">English</button>
+        <button id="menuBtn" aria-expanded="false" aria-label="Open menu" class="md:hidden bg-skyblue text-white px-4 py-2 rounded ml-3" data-key="menu_text">
+          메뉴
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobileMenu" class="hidden bg-gray-800 shadow-md md:hidden">
+      <nav class="flex flex-col space-y-2 px-6 py-4">
+        <a href="home.html" class="hover:text-skyblue mobile-link" data-key="nav_home">홈</a>
+        <a href="about.html" class="hover:text-skyblue mobile-link" data-key="nav_about">회사 소개</a>
+        <a href="#services" class="hover:text-skyblue mobile-link" data-key="nav_services">서비스</a>
+        <a href="tracking.html" class="hover:text-skyblue mobile-link" data-key="nav_track">배송 추적</a>
+        <a href="form.html" class="hover:text-skyblue mobile-link" data-key="nav_create">배송 생성</a>
+        <a href="#reach" class="hover:text-skyblue mobile-link" data-key="nav_reach">글로벌 네트워크</a>
+        <a href="#why" class="hover:text-skyblue mobile-link" data-key="nav_why">왜 우리인가</a>
+        <a href="#industries" class="hover:text-skyblue mobile-link" data-key="nav_industries">산업 분야</a>
+        <a href="bookshop.html" class="hover:text-skyblue mobile-link" data-key="nav_news">서점</a>
+        <a href="#testimonials" class="hover:text-skyblue mobile-link" data-key="nav_testimonials">고객 후기</a>
+        <a href="#contact" class="hover:text-skyblue mobile-link" data-key="nav_contact">연락처</a>
+        <a href="admin/login.html" class="hover:text-skyblue mobile-link" data-key="nav_login">로그인</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="relative bg-gray-900 text-white pt-28 pb-32 min-h-screen flex items-center overflow-hidden">
+    <div class="hero-slider">
+      <div class="hero-slide active"><img src="images/ACL-Port-Scene.jpg" alt="화물선" data-key="hero_img1_alt"></div>
+      <div class="hero-slide"><img src="images/truck-8656658_1280.jpg" alt="컨테이너 항구" data-key="hero_img2_alt"></div>
+      <div class="hero-slide"><img src="images/shaah-shahidh--subrrYxv8A-unsplash.jpg" alt="물류 트럭" data-key="hero_img3_alt"></div>
+    </div>
+
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="container mx-auto relative z-10 text-center px-4">
+      <h1 class="hero-title text-5xl md:text-6xl font-bold mb-6" data-key="hero_title">화물을 이동하고 대륙을 연결합니다.</h1>
+      <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-key="hero_sub">전 세계 어디서든 신뢰할 수 있는 물류 솔루션을 제공합니다.</p>
+
+      <div class="space-x-4">
+        <a href="tracking-form.html" class="hero-btn inline-block bg-skyblue text-white px-6 py-3 rounded-lg font-semibold shadow" data-key="hero_track">배송 추적</a>
+        <a href="#quote" class="hero-btn inline-block bg-white text-sky-600 px-6 py-3 rounded-lg font-semibold shadow" data-key="hero_quote">견적 요청</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACKING FORM -->
+  <section class="py-16 bg-gray-800">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-2xl font-bold mb-6" data-key="track_section_title">배송 추적</h2>
+      <form action="tracking.html" method="get" id="trackingForm" class="max-w-md mx-auto flex gap-2">
+        <input type="text" id="tracking_no" name="tracking_no" placeholder="운송장 번호를 입력하세요"
+               class="flex-1 p-3 border rounded-lg" required>
+        <button type="submit" class="bg-skyblue text-white px-6 py-3 rounded-lg font-semibold hover:bg-sky-600">
+          추적
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-20 bg-gray-800">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-3xl font-bold mb-12" data-aos="fade-up" data-key="services_title">우리의 서비스</h3>
+      <div class="grid md:grid-cols-3 gap-10">
+        <div class="p-6 bg-gray-700 rounded-lg shadow" data-aos="fade-up" data-aos-delay="100">
+          <img src="images/aron-yigin-lNpAmLA_bvQ-unsplash.jpg" alt="컨테이너 운송" class="w-full h-48 object-cover rounded mb-4 mx-auto" data-key="service1_img_alt">
+          <h4 class="text-xl font-semibold mb-2" data-key="service1_title">컨테이너 운송</h4>
+          <p data-key="service1_text">글로벌 무역 경로를 통한 안전하고 효율적인 컨테이너 운송.</p>
+        </div>
+
+        <div class="p-6 bg-gray-700 rounded-lg shadow" data-aos="fade-up" data-aos-delay="200">
+          <img src="images/bernd-dittrich-miHHRMLDDH8-unsplash.jpg" alt="RoRo" class="w-full h-48 object-cover rounded mb-4 mx-auto" data-key="service2_img_alt">
+          <h4 class="text-xl font-semibold mb-2" data-key="service2_title">RoRo (롤온/롤오프)</h4>
+          <p data-key="service2_text">차량 및 중장비를 위한 원활한 전세계 선적 서비스.</p>
+        </div>
+
+        <div class="p-6 bg-gray-700 rounded-lg shadow" data-aos="fade-up" data-aos-delay="300">
+          <img src="images/sunset-4913611_1280.jpg" alt="특수 화물" class="w-full h-48 object-cover rounded mb-4 mx-auto" data-key="service3_img_alt">
+          <h4 class="text-xl font-semibold mb-2" data-key="service3_title">특수 화물</h4>
+          <p data-key="service3_text">대형 화물 및 긴급 화물 운송을 위한 맞춤형 솔루션.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOBAL REACH -->
+  <section id="reach" class="py-20 bg-gray-800">
+    <div class="container mx-auto text-center px-6">
+      <h3 class="text-3xl font-bold mb-12" data-aos="fade-up" data-key="reach_title">글로벌 네트워크</h3>
+      <p class="mb-10 max-w-2xl mx-auto text-gray-300" data-key="reach_text">북미부터 아시아, 아프리카, 유럽, 남미까지 전 대륙에 걸쳐 서비스를 제공합니다.</p>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-10 global-reach">
+        <div data-aos="zoom-in"><img src="https://flagcdn.com/us.svg" alt="북미" class="mx-auto w-20 h-14"><p class="mt-3 font-semibold text-skyblue" data-key="reach_country_na">북미</p></div>
+        <div data-aos="zoom-in" data-aos-delay="100"><img src="https://flagcdn.com/br.svg" alt="남미" class="mx-auto w-20 h-14"><p class="mt-3 font-semibold text-skyblue" data-key="reach_country_sa">남미</p></div>
+        <div data-aos="zoom-in" data-aos-delay="200"><img src="https://flagcdn.com/de.svg" alt="유럽" class="mx-auto w-20 h-14"><p class="mt-3 font-semibold text-skyblue" data-key="reach_country_eu">유럽</p></div>
+        <div data-aos="zoom-in" data-aos-delay="300"><img src="https://flagcdn.com/kr.svg" alt="아시아" class="mx-auto w-20 h-14"><p class="mt-3 font-semibold text-skyblue" data-key="reach_country_as">아시아</p></div>
+        <div data-aos="zoom-in" data-aos-delay="400"><img src="https://flagcdn.com/ng.svg" alt="아프리카" class="mx-auto w-20 h-14"><p class="mt-3 font-semibold text-skyblue" data-key="reach_country_af">아프리카</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+<section id="about" class="py-20 bg-gray-800">
+  <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center px-6">
+    <!-- Text Side -->
+    <div data-aos="fade-right">
+      <h3 class="text-3xl font-bold mb-6" data-key="about_title">회사 소개</h3>
+      <p class="mb-4" data-key="about_p1">
+        AOL LOGISTICS는 전 세계 해운 및 물류 분야에서 신뢰받는 이름입니다.
+        수십 년의 경험을 바탕으로 원활하고 신뢰할 수 있으며 비용 효율적인 화물 운송을 보장합니다.
+      </p>
+      <p data-key="about_p2">
+        우리의 사명은 기업들을 대륙 간에 연결하고 국제 무역을 원활하게 만드는 것입니다.
+      </p>
+    </div>
+
+    <!-- Video Side with Fallback Image -->
+    <div data-aos="fade-left">
+      <video 
+        class="w-full h-64 md:h-auto object-cover shadow-lg rounded" 
+        autoplay 
+        muted 
+        loop 
+        playsinline 
+        data-key="about_video">
+        <source src="images/APLL-Website-Hdr-clip_1920x1080_10152020.mp4" type="video/mp4">
+        <img src="images/ACL-Cell-Guides-RW-scaled.jpg" alt="AOL 소개" class="w-full h-64 md:h-auto object-cover shadow-lg rounded">
+      </video>
+    </div>
+  </div>
+</section>
+
+  <!-- WHY -->
+  <section id="why" class="py-20 bg-gray-800">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-3xl font-bold mb-12" data-aos="fade-up" data-key="why_title">왜 우리를 선택해야 하나요</h3>
+      <div class="grid md:grid-cols-3 gap-10">
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="flip-left">
+          <h4 class="text-xl font-semibold mb-2" data-key="why_item1_title">경험</h4>
+          <p data-key="why_item1_text">산업 전반에 걸친 수십 년의 글로벌 물류 전문성.</p>
+        </div>
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="flip-left" data-aos-delay="100">
+          <h4 class="text-xl font-semibold mb-2" data-key="why_item2_title">글로벌 네트워크</h4>
+          <p data-key="why_item2_text">전 세계 항만, 운송사 및 창고와의 강력한 연결망.</p>
+        </div>
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="flip-left" data-aos-delay="200">
+          <h4 class="text-xl font-semibold mb-2" data-key="why_item3_title">고객 중심</h4>
+          <p data-key="why_item3_text">맞춤형 솔루션, 투명한 추적 및 24/7 지원.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="bg-gray-900 py-20">
+  <div class="container mx-auto px-6 text-center">
+    <h2 class="text-4xl font-bold mb-12 text-skyblue" data-aos="fade-up" data-key="testimonials_title">
+      고객의 소리
+    </h2>
+
+    <!-- Testimonials Grid -->
+    <div class="grid md:grid-cols-3 gap-10">
+      <!-- 1 -->
+      <div class="bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300" data-aos="fade-up" data-aos-delay="100">
+        <img src="images/istockphoto-157421781-612x612.jpg" alt="고객 1"
+             class="w-32 h-32 object-cover rounded-full border-4 border-skyblue mx-auto mb-5" data-key="testimonial1_img_alt">
+        <h3 class="text-xl font-semibold text-white mb-1" data-key="testimonial1_name">Sarah Johnson</h3>
+        <p class="text-sm text-gray-400 mb-3" data-key="testimonial1_role">소상공인</p>
+        <div class="flex justify-center text-sky-400 mb-4" aria-hidden="true">
+          <span class="text-lg">⭐⭐⭐⭐⭐</span>
+        </div>
+        <p class="text-gray-300 italic leading-relaxed" data-key="testimonial1_text">
+          “AOL Logistics는 저의 배송을 세심하고 신속하게 처리해 주었습니다. 실시간 추적으로 항상 정보를 받을 수 있었습니다.”
+        </p>
+      </div>
+
+      <!-- 2 -->
+      <div class="bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300" data-aos="fade-up" data-aos-delay="200">
+        <img src="images/stevedore-1636392_1280.jpg" alt="고객 2"
+             class="w-32 h-32 object-cover rounded-full border-4 border-skyblue mx-auto mb-5" data-key="testimonial2_img_alt">
+        <h3 class="text-xl font-semibold text-white mb-1" data-key="testimonial2_name">Michael Lee</h3>
+        <p class="text-sm text-gray-400 mb-3" data-key="testimonial2_role">전자상거래 사업가</p>
+        <div class="flex justify-center text-sky-400 mb-4" aria-hidden="true">
+          <span class="text-lg">⭐⭐⭐⭐⭐</span>
+        </div>
+        <p class="text-gray-300 italic leading-relaxed" data-key="testimonial2_text">
+          “빠르고 신뢰할 수 있으며 투명합니다. 저의 온라인 상점은 모든 배송을 AOL Logistics에 의존합니다.”
+        </p>
+      </div>
+
+      <!-- 3 -->
+      <div class="bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300" data-aos="fade-up" data-aos-delay="300">
+        <img src="images/teacher-with-glasses-class.jpg" alt="고객 3"
+             class="w-32 h-32 object-cover rounded-full border-4 border-skyblue mx-auto mb-5" data-key="testimonial3_img_alt">
+        <h3 class="text-xl font-semibold text-white mb-1" data-key="testimonial3_name">Amira Khan</h3>
+        <p class="text-sm text-gray-400 mb-3" data-key="testimonial3_role">자주 사용하는 발송자</p>
+        <div class="flex justify-center text-sky-400 mb-4" aria-hidden="true">
+          <span class="text-lg">⭐⭐⭐⭐⭐</span>
+        </div>
+        <p class="text-gray-300 italic leading-relaxed" data-key="testimonial3_text">
+          “훌륭한 지원 팀, 원활한 프로세스 및 빠른 업데이트. AOL Logistics는 제가 화물을 맡길 수 있는 신뢰할 수 있는 파트너입니다.”
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- INDUSTRIES -->
+  <section id="industries" class="py-20 bg-gray-800">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-3xl font-bold mb-12" data-aos="fade-up" data-key="industries_title">우리가 제공하는 산업</h3>
+      <div class="grid md:grid-cols-4 gap-10">
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="fade-up"><h4 class="font-semibold mb-2" data-key="industry1_title">자동차</h4><p data-key="industry1_text">자동차, 트럭 및 중장비를 위한 신뢰할 수 있는 RoRo 선적.</p></div>
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="fade-up" data-aos-delay="100"><h4 class="font-semibold mb-2" data-key="industry2_title">소매</h4><p data-key="industry2_text">매장 및 전자상거래 업체를 위한 빠른 공급망 솔루션.</p></div>
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="fade-up" data-aos-delay="200"><h4 class="font-semibold mb-2" data-key="industry3_title">에너지</h4><p data-key="industry3_text">석유, 가스 및 재생에너지 프로젝트용 장비의 안전한 운송.</p></div>
+        <div class="p-6 bg-gray-700 shadow rounded" data-aos="fade-up" data-aos-delay="300"><h4 class="font-semibold mb-2" data-key="industry4_title">의료</h4><p data-key="industry4_text">의약품 및 의료용품을 위한 온도 제어 배송.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news" class="py-20 bg-gray-800">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-3xl font-bold mb-12" data-aos="fade-up" data-key="news_title">최신 소식</h3>
+      <div class="grid md:grid-cols-3 gap-10">
+        <div class="p-6 bg-gray-700 rounded shadow" data-aos="fade-up"><h4 class="font-semibold mb-2" data-key="news1_title">글로벌 배송 트렌드 2025</h4><p data-key="news1_text">글로벌 배송의 최신 과제와 혁신을 확인하세요.</p></div>
+        <div class="p-6 bg-gray-700 rounded shadow" data-aos="fade-up" data-aos-delay="100"><h4 class="font-semibold mb-2" data-key="news2_title">AOL의 RoRo 최적화 방법</h4><p data-key="news2_text">차량 및 기계류 선적을 간소화하는 방법을 알아보세요.</p></div>
+        <div class="p-6 bg-gray-700 rounded shadow" data-aos="fade-up" data-aos-delay="200"><h4 class="font-semibold mb-2" data-key="news3_title">물류의 기술</h4><p data-key="news3_text">AI 및 IoT가 화물 업계를 어떻게 변화시키는지 확인하세요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-20 bg-gray-800">
+    <div class="container mx-auto px-6">
+      <h3 class="text-3xl font-bold mb-8 text-center" data-aos="fade-up" data-key="contact_title">문의하기</h3>
+      <div class="grid md:grid-cols-2 gap-12">
+        <div data-aos="fade-right">
+          <p class="mb-4" data-key="contact_address_line">📍 본사: 123 Global Trade Street, New York, USA</p>
+          <p class="mb-4" data-key="contact_phone_line">📞 전화: +1 800 173 5507</p>
+          <p class="mb-4" data-key="contact_email_line">📧 이메일: logisticsaol6@gmail.com</p>
+        </div>
+
+        
+        <!-- <form class="space-y-4" data-aos="fade-left">
+          <input type="text" placeholder="이름" class="w-full p-3 border rounded" data-key="contact_form_name_placeholder" required>
+          <input type="email" placeholder="이메일" class="w-full p-3 border rounded" data-key="contact_form_email_placeholder" required>
+          <textarea placeholder="메시지" rows="5" class="w-full p-3 border rounded" data-key="contact_form_message_placeholder" required></textarea>
+          <button type="submit" class="bg-skyblue text-white px-6 py-3 rounded font-semibold hover:bg-sky-600" data-key="contact_form_button">메시지 보내기</button>
+        </form> -->
+
+
+<!-- CONTACT FORM (use this markup) -->
+<form id="contactForm" class="space-y-4" data-aos="fade-left">
+  <input
+    id="contact_name"
+    type="text"
+    name="name"
+    placeholder="이름"
+    data-key="contact_form_name_placeholder"
+    class="w-full p-3 border rounded"
+    required
+  />
+
+  <input
+    id="contact_email"
+    type="email"
+    name="email"
+    placeholder="이메일"
+    data-key="contact_form_email_placeholder"
+    class="w-full p-3 border rounded"
+    required
+  />
+
+  <textarea
+    id="contact_message"
+    name="message"
+    placeholder="메시지"
+    rows="5"
+    data-key="contact_form_message_placeholder"
+    class="w-full p-3 border rounded"
+    required
+  ></textarea>
+
+  <button
+    type="submit"
+    id="contactSubmit"
+    data-key="contact_form_button"
+    class="bg-skyblue text-white px-6 py-3 rounded font-semibold hover:bg-sky-600"
+  >
+    메시지 보내기
+  </button>
+
+  <div id="contactMessage" class="mt-3 text-center"></div>
+</form>
+
+
+
+        
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+  
+
+  <!-- FOOTER -->
+  <footer id="contact" class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto grid md:grid-cols-3 gap-8 text-center md:text-left px-6">
+      <div>
+        <h4 class="text-xl font-bold mb-4" data-key="footer_brand">AOL LOGISTICS</h4>
+        <p data-key="footer_tagline">신뢰할 수 있는 해운 및 물류 솔루션으로 대륙을 연결합니다.</p>
+      </div>
+      <div>
+        <h4 class="text-xl font-bold mb-4">빠른 링크</h4>
+        <ul class="space-y-2">
+          <li><a href="#home" class="hover:text-skyblue" data-key="nav_home">홈</a></li>
+          <li><a href="about.html" class="hover:text-skyblue" data-key="nav_about">회사 소개</a></li>
+          <li><a href="#services" class="hover:text-skyblue" data-key="nav_services">서비스</a></li>
+          <li><a href="tracking.html" class="hover:text-skyblue" data-key="nav_track">배송 추적</a></li>
+          <li><a href="form.html" class="hover:text-skyblue" data-key="nav_create">배송 생성</a></li>
+          <li><a href="admin/login.html" class="hover:text-skyblue" data-key="nav_login">로그인</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xl font-bold mb-4" data-key="footer_contact_heading">연락처</h4>
+        <p data-key="footer_email">이메일: logisticsaol6@gmail.com</p>
+      </div>
+    </div>
+    <div class="text-center mt-8 border-t border-gray-700 pt-6">
+      <p data-key="copyright_text">&copy; 2025 AOL LOGISTICS. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init({duration: 800, once: true});</script>
+
+
+ <!-- close mobile menu when a link is clicked -->
+  <script>
+  document.querySelectorAll('#mobileMenu a').forEach(link => {
+  link.addEventListener('click', ()=> document.getElementById('mobileMenu').classList.add('hidden'))
+})
+  </script>
+
+  
+  <!-- HERO SLIDER -->
+  <script>
+    const slides = document.querySelectorAll(".hero-slide");
+    let index = 0;
+
+    function showSlide(i) {
+      slides.forEach((s, idx) => {
+        s.classList.toggle("active", idx === i);
+      });
+    }
+
+    function nextSlide() {
+      index = (index + 1) % slides.length;
+      showSlide(index);
+    }
+
+    if (slides.length) {
+      showSlide(index);
+      setInterval(nextSlide, 5000);
+    }
+  </script>
+
+  <!-- MOBILE MENU -->
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (menuBtn) {
+      menuBtn.addEventListener("click", () => {
+        const isHidden = mobileMenu.classList.toggle("hidden");
+        menuBtn.setAttribute("aria-expanded", !isHidden);
+      });
+
+      document.querySelectorAll(".mobile-link").forEach(link => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          menuBtn.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+  </script>
+
+
+<!-- CONTACT SUBMIT SCRIPT (replace your current contact script) -->
+<script>
+/* SUPABASE SETUP */
+const supabaseUrl = "https://byvffsxsfehrybkyamyu.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ5dmZmc3hzZmVocnlia3lhbXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyNDM0MjMsImV4cCI6MjA3MzgxOTQyM30.R99A5PQ2t9keXeQdglGlq35IOGRk7d3NsqPbe9Dw8uY"; // <-- Replace securely
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  function getSiteLang() {
+    // your language toggle stores site_lang in localStorage
+    return localStorage.getItem('site_lang') || 'ko';
+  }
+
+  // small helper to get translated UI text for status messages
+  function t(key) {
+    const lang = getSiteLang();
+    const map = {
+      ko: {
+        sending: "전송 중...",
+        sendButton: "메시지 보내기",
+        sent: "✅ 메시지가 성공적으로 전송되었습니다!",
+        errorPrefix: "❌ 오류: "
+      },
+      en: {
+        sending: "Sending...",
+        sendButton: "Send Message",
+        sent: "✅ Message sent successfully!",
+        errorPrefix: "❌ Error: "
+      }
+    };
+    return map[lang][key];
+  }
+
+  document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById("contactSubmit");
+    const msg = document.getElementById("contactMessage");
+
+    // set button to sending (respect current language)
+    btn.disabled = true;
+    btn.innerText = t('sending');
+
+    const name = document.getElementById("contact_name").value.trim();
+    const email = document.getElementById("contact_email").value.trim();
+    const message = document.getElementById("contact_message").value.trim();
+
+    // basic client-side validation (avoid empty inserts)
+    if (!name || !email || !message) {
+      msg.innerHTML = `<p class="text-red-500">${t('errorPrefix')}Please complete all fields.</p>`;
+      btn.disabled = false;
+      btn.innerText = t('sendButton');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .insert([{ name, email, message }]);
+
+      if (error) {
+        msg.innerHTML = `<p class="text-red-500">${t('errorPrefix')}${error.message}</p>`;
+        btn.disabled = false;
+        btn.innerText = t('sendButton');
+        return;
+      }
+
+      // success UI
+      msg.innerHTML = `<p class="text-green-400 font-semibold">${t('sent')}</p>`;
+      document.getElementById("contactForm").reset();
+      btn.disabled = false;
+      btn.innerText = t('sendButton');
+
+    } catch (ex) {
+      console.error("Contact submit error:", ex);
+      msg.innerHTML = `<p class="text-red-500">${t('errorPrefix')}${ex.message || ex}</p>`;
+      btn.disabled = false;
+      btn.innerText = t('sendButton');
+    }
+  });
+
+  // optional: when language toggles, ensure button text updates immediately
+  // If your setLanguage() already changes data-key textContent values, this is redundant,
+  // but we include a small listener so the submit-button always reflects the active language.
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'site_lang') {
+      const cur = localStorage.getItem('site_lang') || 'ko';
+      const btn = document.getElementById('contactSubmit');
+      if (btn) {
+        btn.innerText = cur === 'en' ? 'Send Message' : '메시지 보내기';
+      }
+    }
+  });
+</script>
+
+
+
+
+
+  
+
+  <!-- LANGUAGE TOGGLE -->
+  <script>
+    const langToggle = document.getElementById("langToggle");
+
+    const translations = {
+      en: {
+        brand: "AOL LOGISTICS",
+        nav_home: "Home",
+        nav_about: "About Us",
+        nav_services: "Services",
+        nav_track: "Track Shipment",
+        nav_create: "Create Shipment",
+        nav_reach: "Global Reach",
+        nav_why: "Why Us",
+        nav_industries: "Industries",
+        nav_news: "Book shop",
+        nav_testimonials: "Testimonials",
+        nav_contact: "Contact",
+        nav_login: "Login",
+        menu_text: "Menu",
+        hero_img1_alt: "Cargo Ship",
+        hero_img2_alt: "Container Port",
+        hero_img3_alt: "Logistics Truck",
+        hero_title: "We move cargo and connect continents.",
+        hero_sub: "Reliable logistics solutions that deliver across the globe.",
+        hero_track: "Track Shipment",
+        hero_quote: "Request Quote",
+        track_section_title: "Track Your Shipment",
+        tracking_placeholder: "Enter Tracking Number",
+        track_button_text: "Track",
+        services_title: "Our Services",
+        service1_img_alt: "Container Shipping",
+        service1_title: "Container Shipping",
+        service1_text: "Secure and efficient container transport across global trade routes.",
+        service2_img_alt: "RoRo",
+        service2_title: "RoRo (Roll-on/Roll-off)",
+        service2_text: "Seamless shipping for vehicles and heavy machinery worldwide.",
+        service3_img_alt: "Special Cargo",
+        service3_title: "Special Cargo",
+        service3_text: "Custom solutions for oversized and time-sensitive cargo shipments.",
+        reach_title: "Our Global Reach",
+        reach_text: "We proudly deliver across every continent — serving businesses from North America to Asia, Africa to Europe, and South America.",
+        reach_country_na: "North America",
+        reach_country_sa: "South America",
+        reach_country_eu: "Europe",
+        reach_country_as: "Asia",
+        reach_country_af: "Africa",
+        about_title: "About Us",
+        about_p1: "AOL LOGISTICS is a trusted name in global shipping and logistics. With decades of experience, we ensure smooth, reliable, and cost-effective transportation of goods worldwide.",
+        about_p2: "Our mission is to connect businesses across continents and make international trade seamless.",
+        about_img_alt: "About AOL",
+        why_title: "Why Choose Us",
+        why_item1_title: "Experience",
+        why_item1_text: "Decades of global logistics expertise across industries.",
+        why_item2_title: "Global Network",
+        why_item2_text: "Strong connections with ports, carriers and warehouses worldwide.",
+        why_item3_title: "Customer Focus",
+        why_item3_text: "Personalized solutions, transparent tracking and 24/7 support.",
+        testimonials_title: "What Our Customers Say",
+        testimonial1_img_alt: "Customer 1",
+        testimonial1_text: "“AOL Logistics handled my deliveries with such care and speed. I always felt informed with their real-time tracking.”",
+        testimonial1_name: "Sarah Johnson",
+        testimonial1_role: "Small Business Owner",
+        testimonial2_img_alt: "Customer 2",
+        testimonial2_text: "“Fast, reliable, and transparent. My online store relies on AOL Logistics for every shipment — never been disappointed.”",
+        testimonial2_name: "Michael Lee",
+        testimonial2_role: "E-commerce Entrepreneur",
+        testimonial3_img_alt: "Customer 3",
+        testimonial3_text: "“Excellent support team, smooth process, and quick updates. AOL Logistics is a partner I fully trust with my cargo.”",
+        testimonial3_name: "Amira Khan",
+        testimonial3_role: "Frequent Shipper",
+        industries_title: "Industries We Serve",
+        industry1_title: "Automotive",
+        industry1_text: "Reliable RoRo shipping for cars, trucks and heavy machinery.",
+        industry2_title: "Retail",
+        industry2_text: "Fast supply chain solutions for stores and e-commerce businesses.",
+        industry3_title: "Energy",
+        industry3_text: "Safe transport of equipment for oil, gas and renewable energy projects.",
+        industry4_title: "Healthcare",
+        industry4_text: "Temperature-controlled shipping for pharmaceuticals and medical supplies.",
+        news_title: "Latest Insights",
+        news1_title: "Global Shipping Trends 2025",
+        news1_text: "Stay updated with the latest challenges and innovations in global shipping.",
+        news2_title: "How AOL Optimizes RoRo",
+        news2_text: "Discover how we simplify vehicle and machinery shipping worldwide.",
+        news3_title: "Technology in Logistics",
+        news3_text: "Learn how AI and IoT are transforming the shipping industry.",
+        contact_title: "Contact Us",
+        contact_address_line: "📍 Headquarters: 123 Global Trade Street, New York, USA",
+        contact_phone_line: "📞 Phone: +1 800 173 5507",
+        contact_email_line: "📧 Email: logisticsaol6@gmail.com",
+        contact_form_name_placeholder: "Your Name",
+        contact_form_email_placeholder: "Your Email",
+        contact_form_message_placeholder: "Your Message",
+        contact_form_button: "Send Message",
+        footer_brand: "AOL LOGISTICS",
+        footer_tagline: "Connecting continents with reliable shipping and logistics solutions.",
+        footer_contact_heading: "Contact",
+        footer_email: "Email: logisticsaol6@gmail.com",
+        footer_phone: "Phone: +1 800 173 5507",
+        footer_address: "Address: 123 Global Trade Road, New York, USA",
+        copyright_text: "© 2025 AOL LOGISTICS. All rights reserved."
+      },
+      ko: {
+        brand: "AOL LOGISTICS",
+        nav_home: "홈",
+        nav_about: "회사 소개",
+        nav_services: "서비스",
+        nav_track: "배송 추적",
+        nav_create: "배송 생성",
+        nav_reach: "글로벌 네트워크",
+        nav_why: "왜 우리인가",
+        nav_industries: "산업 분야",
+        nav_news: "서점",
+        nav_testimonials: "고객 후기",
+        nav_contact: "연락처",
+        nav_login: "로그인",
+        menu_text: "메뉴",
+        hero_img1_alt: "화물선",
+        hero_img2_alt: "컨테이너 항구",
+        hero_img3_alt: "물류 트럭",
+        hero_title: "화물을 이동하고 대륙을 연결합니다.",
+        hero_sub: "전 세계 어디서든 신뢰할 수 있는 물류 솔루션을 제공합니다.",
+        hero_track: "배송 추적",
+        hero_quote: "견적 요청",
+        track_section_title: "배송 추적",
+        tracking_placeholder: "운송장 번호를 입력하세요",
+        track_button_text: "추적",
+        services_title: "우리의 서비스",
+        service1_img_alt: "컨테이너 운송",
+        service1_title: "컨테이너 운송",
+        service1_text: "글로벌 무역 경로를 통한 안전하고 효율적인 컨테이너 운송.",
+        service2_img_alt: "RoRo",
+        service2_title: "RoRo (롤온/롤오프)",
+        service2_text: "차량 및 중장비를 위한 원활한 전세계 선적 서비스.",
+        service3_img_alt: "특수 화물",
+        service3_title: "특수 화물",
+        service3_text: "대형 화물 및 긴급 화물 운송을 위한 맞춤형 솔루션.",
+        reach_title: "글로벌 네트워크",
+        reach_text: "북미부터 아시아, 아프리카, 유럽, 남미까지 전 대륙에 걸쳐 서비스를 제공합니다.",
+        reach_country_na: "북미",
+        reach_country_sa: "남미",
+        reach_country_eu: "유럽",
+        reach_country_as: "아시아",
+        reach_country_af: "아프리카",
+        about_title: "회사 소개",
+        about_p1: "AOL LOGISTICS는 전 세계 해운 및 물류 분야에서 신뢰받는 이름입니다. 수십 년의 경험을 바탕으로 원활하고 신뢰할 수 있으며 비용 효율적인 화물 운송을 보장합니다.",
+        about_p2: "우리의 사명은 기업들을 대륙 간에 연결하고 국제 무역을 원활하게 만드는 것입니다.",
+        about_img_alt: "AOL 소개",
+        why_title: "왜 우리를 선택해야 하나요",
+        why_item1_title: "경험",
+        why_item1_text: "산업 전반에 걸친 수십 년의 글로벌 물류 전문성.",
+        why_item2_title: "글로벌 네트워크",
+        why_item2_text: "전 세계 항만, 운송사 및 창고와의 강력한 연결망.",
+        why_item3_title: "고객 중심",
+        why_item3_text: "맞춤형 솔루션, 투명한 추적 및 24/7 지원.",
+        testimonials_title: "고객의 소리",
+        testimonial1_img_alt: "고객 1",
+        testimonial1_text: "“AOL Logistics는 저의 배송을 세심하고 신속하게 처리해 주었습니다. 실시간 추적으로 항상 정보를 받을 수 있었습니다.”",
+        testimonial1_name: "Sarah Johnson",
+        testimonial1_role: "소상공인",
+        testimonial2_img_alt: "고객 2",
+        testimonial2_text: "“빠르고 신뢰할 수 있으며 투명합니다. 저의 온라인 상점은 모든 배송을 AOL Logistics에 의존합니다.”",
+        testimonial2_name: "Michael Lee",
+        testimonial2_role: "전자상거래 사업가",
+        testimonial3_img_alt: "고객 3",
+        testimonial3_text: "“훌륭한 지원 팀, 원활한 프로세스 및 빠른 업데이트. AOL Logistics는 제가 화물을 맡길 수 있는 신뢰할 수 있는 파트너입니다.”",
+        testimonial3_name: "Amira Khan",
+        testimonial3_role: "자주 사용하는 발송자",
+        industries_title: "우리가 제공하는 산업",
+        industry1_title: "자동차",
+        industry1_text: "자동차, 트럭 및 중장비를 위한 신뢰할 수 있는 RoRo 선적.",
+        industry2_title: "소매",
+        industry2_text: "매장 및 전자상거래 업체를 위한 빠른 공급망 솔루션.",
+        industry3_title: "에너지",
+        industry3_text: "석유, 가스 및 재생에너지 프로젝트용 장비의 안전한 운송.",
+        industry4_title: "의료",
+        industry4_text: "의약품 및 의료용품을 위한 온도 제어 배송.",
+        news_title: "최신 소식",
+        news1_title: "글로벌 배송 트렌드 2025",
+        news1_text: "글로벌 배송의 최신 과제와 혁신을 확인하세요.",
+        news2_title: "AOL의 RoRo 최적화 방법",
+        news2_text: "차량 및 기계류 선적을 간소화하는 방법을 알아보세요.",
+        news3_title: "물류의 기술",
+        news3_text: "AI 및 IoT가 화물 업계를 어떻게 변화시키는지 확인하세요.",
+        contact_title: "문의하기",
+        contact_address_line: "📍 본사: 123 Global Trade Street, New York, USA",
+        contact_phone_line: "📞 전화: +1 234 567 890",
+        contact_email_line: "📧 이메일: logisticsaol6@gmail.com",
+        contact_form_name_placeholder: "이름",
+        contact_form_email_placeholder: "이메일",
+        contact_form_message_placeholder: "메시지",
+        contact_form_button: "메시지 보내기",
+        footer_brand: "AOL LOGISTICS",
+        footer_tagline: "신뢰할 수 있는 해운 및 물류 솔루션으로 대륙을 연결합니다.",
+        footer_contact_heading: "연락처",
+        footer_email: "이메일: logisticsaol6@gmail.com",
+        footer_phone: "전화: +1 800 173 5507",
+        footer_address: "주소: 123 글로벌 트레이드 로드, 뉴욕, 미국",
+        copyright_text: "© 2025 AOL LOGISTICS. 모든 권리 보유."
+      }
+    };
+
+    // initialize language (default ko)
+    let currentLang = localStorage.getItem('site_lang') || 'ko';
+
+    function setLanguage(lang) {
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        const text = (translations[lang] && translations[lang][key]) ? translations[lang][key] : null;
+        if (!text) return;
+
+        // inputs and textareas: set placeholder
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = text;
+        } else if (el.tagName === 'IMG') {
+          el.alt = text;
+        } else {
+          el.textContent = text;
+        }
+      });
+
+      // update toggle button label
+      langToggle.textContent = (lang === 'ko') ? 'English' : '한국어';
+      localStorage.setItem('site_lang', lang);
+      currentLang = lang;
+    }
+
+    // apply initial language on DOMContentLoaded to ensure elements exist
+    document.addEventListener('DOMContentLoaded', () => {
+      setLanguage(currentLang);
+    });
+
+    langToggle.addEventListener('click', () => {
+      setLanguage(currentLang === 'ko' ? 'en' : 'ko');
+    });
+  </script>
+
+</body>
+</html>
