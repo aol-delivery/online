@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>배송 생성 - AOL LOGISTICS</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/images (2).jpeg" />
+
+  <!-- ✅ Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5C2122TVD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G5C2122TVD');
+  </script>
+
+  <!-- ✅ Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <!-- ✅ Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      background-color: #111827;
+      color: #f9fafb;
+      font-family: "Inter", sans-serif;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <header class="bg-gray-900 shadow-md fixed top-0 left-0 w-full z-50">
+    <div class="container mx-auto flex items-center justify-between px-6 py-3">
+      <a href="home.html" class="flex items-center space-x-2">
+        <img src="images/images (2).jpeg" alt="Logo" class="h-12 w-12 object-cover rounded-full hidden sm:block">
+        <div class="flex flex-col leading-tight">
+          <h1 class="text-lg md:text-xl font-bold text-sky-400 italic">AOL LOGISTICS</h1>
+          <p data-key="brandTagline" class="text-xs italic text-gray-300 -mt-1 tracking-tight hidden sm:block">
+            delivery service at its finest
+          </p>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex space-x-6 text-gray-300">
+        <a data-key="navAbout" href="home.html#about" class="hover:text-sky-400">회사 소개</a>
+        <a data-key="navServices" href="home.html#services" class="hover:text-sky-400">서비스</a>
+        <a data-key="navTracking" href="tracking.html" class="hover:text-sky-400">배송 추적</a>
+        <a data-key="navForm" href="form.html" class="hover:text-sky-400 font-semibold text-sky-400">배송 생성</a>
+        <a data-key="navNews" href="home.html#news" class="hover:text-sky-400">뉴스</a>
+        <a data-key="navContact" href="home.html#contact" class="hover:text-sky-400">연락처</a>
+        <a data-key="navLogin" href="admin/login.html" class="hover:text-sky-400">로그인</a>
+      </nav>
+
+      <!-- Buttons -->
+      <div class="flex items-center">
+        <button id="langToggle" aria-label="Toggle language" class="ml-4 bg-sky-400 text-gray-900 px-4 py-2 rounded font-semibold">
+          English
+        </button>
+        <button id="menuBtn" aria-expanded="false" aria-label="Toggle menu" class="md:hidden bg-sky-400 text-gray-900 px-4 py-2 rounded ml-3">
+          메뉴
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden bg-gray-800 text-gray-300 md:hidden flex flex-col space-y-3 px-6 py-4">
+      <a data-key="navAbout" href="home.html#about" class="hover:text-sky-400">회사 소개</a>
+      <a data-key="navServices" href="home.html#services" class="hover:text-sky-400">서비스</a>
+      <a data-key="navTracking" href="tracking.html" class="hover:text-sky-400">배송 추적</a>
+      <a data-key="navForm" href="form.html" class="hover:text-sky-400 font-semibold text-sky-400">배송 생성</a>
+      <a data-key="navNews" href="home.html#news" class="hover:text-sky-400">뉴스</a>
+      <a data-key="navContact" href="home.html#contact" class="hover:text-sky-400">연락처</a>
+      <a data-key="navLogin" href="admin/login.html" class="hover:text-sky-400">로그인</a>
+    </div>
+  </header>
+
+  <!-- Shipment Form -->
+  <main class="flex-grow pt-32 pb-20">
+    <div class="container mx-auto px-6" data-aos="fade-up">
+      <h2 data-key="formTitle" class="text-3xl font-bold text-center mb-8 text-sky-400">수령인 정보</h2>
+
+      <form id="shipmentForm" class="max-w-2xl mx-auto bg-gray-800 shadow-lg rounded-lg p-8 space-y-6">
+        <div>
+          <label data-key="nameLabel" for="receiver_name" class="block font-semibold text-gray-200">이름</label>
+          <input type="text" id="receiver_name" class="w-full mt-2 p-3 border border-gray-600 rounded bg-gray-900 text-white" required>
+        </div>
+
+        <div>
+          <label data-key="emailLabel" for="receiver_email" class="block font-semibold text-gray-200">이메일</label>
+          <input type="email" id="receiver_email" class="w-full mt-2 p-3 border border-gray-600 rounded bg-gray-900 text-white" required>
+        </div>
+
+        <div>
+          <label data-key="addressLabel" for="receiver_address" class="block font-semibold text-gray-200">주소</label>
+          <textarea id="receiver_address" class="w-full mt-2 p-3 border border-gray-600 rounded bg-gray-900 text-white" required></textarea>
+        </div>
+
+        <div>
+          <label data-key="countryLabel" for="receiver_country" class="block font-semibold text-gray-200">국가</label>
+          <input type="text" id="receiver_country" class="w-full mt-2 p-3 border border-gray-600 rounded bg-gray-900 text-white" required>
+        </div>
+
+        <div>
+          <label data-key="phoneLabel" for="receiver_phone" class="block font-semibold text-gray-200">전화번호</label>
+          <input type="tel" id="receiver_phone" class="w-full mt-2 p-3 border border-gray-600 rounded bg-gray-900 text-white" required>
+        </div>
+
+        <button type="submit" data-key="submitBtn" class="w-full bg-sky-500 text-gray-900 py-3 rounded-lg font-semibold hover:bg-sky-400">
+          배송 제출
+        </button>
+      </form>
+
+      <div id="message" class="mt-6 text-center"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 py-6 text-center text-gray-400 text-sm border-t border-gray-800">
+    <p data-key="footerText">© 2025 AOL Logistics. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    AOS.init({ duration: 800, easing: "ease-in-out" });
+
+    // ✅ Mobile Menu Toggle
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      const expanded = menuBtn.getAttribute("aria-expanded") === "true";
+      menuBtn.setAttribute("aria-expanded", !expanded);
+    });
+
+    // ✅ Supabase Setup
+    const SUPABASE_URL = "https://byvffsxsfehrybkyamyu.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ5dmZmc3hzZmVocnlia3lhbXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyNDM0MjMsImV4cCI6MjA3MzgxOTQyM30.R99A5PQ2t9keXeQdglGlq35IOGRk7d3NsqPbe9Dw8uY"; // ⚠️ Replace securely
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+    // Auto generators
+    function generateTrackingNo() {
+      return "AOL-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    }
+    function generateAsaluNo() {
+      return "ASALU-" + Math.floor(Math.random() * 1000000);
+    }
+    function generateDeliveryCode() {
+      return "DEL-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+    }
+    function generateItemNo() {
+      return "ITEM-" + Math.floor(Math.random() * 1000000);
+    }
+
+    // ✅ Handle Form Submission
+    async function submitForm(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector("button[type='submit']");
+      const messageDiv = document.getElementById("message");
+      btn.disabled = true;
+      btn.innerText = document.documentElement.lang === "ko" ? "제출 중..." : "Submitting...";
+
+      const trackingNo = generateTrackingNo();
+      const trackingLink = `tracking.html?tracking_no=${trackingNo}`;
+      const asaluNo = generateAsaluNo();
+      const deliveryCode = generateDeliveryCode();
+      const itemNo = generateItemNo();
+
+      const shipment = {
+        tracking_no: trackingNo,
+        tracking_link: trackingLink,
+        receiver_name: document.getElementById("receiver_name").value,
+        receiver_email: document.getElementById("receiver_email").value,
+        receiver_address: document.getElementById("receiver_address").value,
+        receiver_country: document.getElementById("receiver_country").value,
+        receiver_phone: document.getElementById("receiver_phone").value,
+        asalu_no: asaluNo,
+        delivery_code: deliveryCode,
+        item_no: itemNo,
+        status: "주문 접수"
+      };
+
+      // ✅ Insert shipment and capture the new ID
+        const { data, error } = await supabase
+        .from("user_info")
+        .insert([shipment])
+        .select(); // <-- this ensures Supabase returns the inserted row
+        
+        if (error) {
+          messageDiv.innerHTML = `<p class="text-red-500">❌ ${document.documentElement.lang === "ko" ? "실패:" : "Failed:"} ${error.message}</p>`;btn.disabled = false;
+          btn.innerText = document.documentElement.lang === "ko" ? "배송 제출" : "Submit Shipment";
+          return;
+        }
+        // ✅ Get the newly inserted shipment ID
+        const shipmentId = data?.[0]?.id || null;
+
+
+
+      // Insert initial tracking update
+       const trackingUpdate = {
+        shipment_id: shipmentId,
+        tracking_no: trackingNo,
+        status: "대기 중",
+        progress: "주문 접수",
+        location: "우크라이나",
+        note: "배송 생성됨"
+      };
+
+       const { error: trackingError } = await supabase
+       .from("tracking_updates")
+       .insert([trackingUpdate]);
+
+       if (trackingError) {
+        console.error("❌ 추적 오류:", trackingError);
+        messageDiv.innerHTML += `<p class="text-red-600">❌ 추적 삽입 실패: ${trackingError.message}</p>`;
+       }
+
+
+
+      // Success message
+      document.getElementById("shipmentForm").classList.add("hidden");
+      messageDiv.innerHTML = `
+        <div class="bg-gray-800 shadow-lg rounded-lg p-6">
+          <p class="text-green-400 font-semibold text-lg mb-4">✅ ${
+            document.documentElement.lang === "ko"
+              ? "배송이 성공적으로 생성되었습니다!"
+              : "Shipment successfully created!"
+          }</p>
+          <p><b>${document.documentElement.lang === "ko" ? "추적 번호" : "Tracking No"}:</b> ${trackingNo}</p>
+          <p><a href="${trackingLink}" class="text-sky-400 underline">${
+        document.documentElement.lang === "ko"
+          ? "여기에서 배송을 추적하세요"
+          : "Track your shipment here"
+      }</a></p>
+        </div>`;
+      btn.disabled = false;
+      btn.innerText = document.documentElement.lang === "ko" ? "배송 제출" : "Submit Shipment";
+    }
+
+    document.getElementById("shipmentForm").addEventListener("submit", submitForm);
+
+    // ✅ Translations
+    const translations = {
+      en: {
+        brandTagline: "delivery service at its finest",
+        footerText: "© 2025 AOL Logistics. All rights reserved.",
+        navAbout: "About",
+        navServices: "Services",
+        navTracking: "Track Shipment",
+        navForm: "Create Shipment",
+        navNews: "News",
+        navContact: "Contact",
+        navLogin: "Login",
+        formTitle: "Receiver Information",
+        nameLabel: "Name",
+        emailLabel: "Email",
+        addressLabel: "Address",
+        countryLabel: "Country",
+        phoneLabel: "Phone Number",
+        submitBtn: "Submit Shipment",
+      },
+      ko: {
+        brandTagline: "최상의 배송 서비스",
+        footerText: "© 2025 AOL 물류. 모든 권리 보유.",
+        navAbout: "회사 소개",
+        navServices: "서비스",
+        navTracking: "배송 추적",
+        navForm: "배송 생성",
+        navNews: "뉴스",
+        navContact: "연락처",
+        navLogin: "로그인",
+        formTitle: "수령인 정보",
+        nameLabel: "이름",
+        emailLabel: "이메일",
+        addressLabel: "주소",
+        countryLabel: "국가",
+        phoneLabel: "전화번호",
+        submitBtn: "배송 제출",
+      },
+    };
+
+    // ✅ Language Toggle
+    const langToggle = document.getElementById("langToggle");
+    langToggle.addEventListener("click", () => {
+      const currentLang = document.documentElement.lang;
+      const newLang = currentLang === "ko" ? "en" : "ko";
+      document.documentElement.lang = newLang;
+
+      document.querySelectorAll("[data-key]").forEach((el) => {
+        const key = el.getAttribute("data-key");
+        el.innerText = translations[newLang][key];
+      });
+
+      langToggle.innerText = newLang === "ko" ? "English" : "한국어";
+      document.title = newLang === "ko" ? "배송 생성 - AOL LOGISTICS" : "Create Shipment - AOL LOGISTICS";
+    });
+  </script>
+</body>
+</html>
